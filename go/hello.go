@@ -3,7 +3,7 @@ import(
 	"fmt" //
 	"unsafe"
 	// "math"
-	"time"
+	// "time"
 )
 
 
@@ -109,28 +109,75 @@ func main(){
 	// w := 123
 	// println(w)
 
-	var i = 3
-	go func (a int)  {
-		println(a)
-		println(1)
-	}(i)
-	println(2)
-	// time.Sleep(1 * time.Second)
 
 
-	ch := make(chan int)
-	ch <- 1
-	go func ()  {
-		<- ch
-		println("1")
-	}()
-	println("2")
-	// fatal error: all goroutines are asleep - deadlock!
-	// 线程陷入死锁。
+	// var i = 3
+	// go func (a int)  {
+	// 	println(a)
+	// 	println(1)
+	// }(i)
+	// println(2)
+	// // time.Sleep(1 * time.Second)
 
+
+	// ch := make(chan int)
+	// ch <- 1
+	// go func ()  {
+	// 	<- ch
+	// 	println("1")
+	// }()
+	// println("2")
+	// // fatal error: all goroutines are asleep - deadlock!
+	// // 线程陷入死锁。
+
+
+	s := []int{7, 2, 8, 9}
+	
+	// c := make(chan int)
+	var c chan int
+	go sum(s[:len(s)/2], c)
+	// go sum(s[len(s)/2:], c)
+	x := <-c
+	// x, y := <-c, <-c 
+
+
+
+	// close(c)
+	// z := <-c
+	// go func (chan int)  {
+	// 	z := 3
+	// 	c <- z
+	// 	fmt.Println(z)	
+	// }(c)
+	
+
+
+	// z := 3
+	// c <- z
+	// fmt.Println(z)
+		
+
+	fmt.Println(c)
+
+	fmt.Println(x, y, x+y)
+
+
+
+
+	// 从一个被 close 的 channel 中接收数据，会立即返回元素类型的零值。
+	// 从一个 nil 的 channel 中接收数据，会发生死锁。  fatal error: all goroutines are asleep - deadlock!
+	// 向一个被 close 的 channel 中继续发送数据，会导致  panic: send on closed channel
+	// 一个没有初始化的 channel 是 nil ，nil 的 channel receive 或 send 会导致死锁。 fatal error: all goroutines are asleep - deadlock!
 }
 
 
+func sum(s []int, c chan int)  {
+	sum := 0
+	for _, v := range s {
+		sum += v
+	}
+	c <- sum
+}
 
 
 
